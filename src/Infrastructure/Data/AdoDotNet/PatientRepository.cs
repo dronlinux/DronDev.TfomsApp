@@ -5,7 +5,9 @@ using System.Linq;
 using Dapper;
 using DronDev.TestApp.Core.Entities;
 using DronDev.TestApp.Core.Interfaces;
+using DronDev.TestApp.Core.Messages;
 using DronDev.TestApp.Infrastructure.Common;
+using Microsoft.Extensions.Configuration;
 
 namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
 {
@@ -19,6 +21,18 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
 
         private static readonly DbProviderFactory _factory =
             DbProviderFactories.GetFactory("System.Data.SqlClient");
+
+        private readonly IConfiguration _configuration;
+        public PatientRepository()
+        {
+            _connectionString = _configuration.GetConnectionString("DbConnStr");
+            if (string.IsNullOrEmpty(_connectionString))
+            {
+                throw new DataException(
+                    string.Format("{0}:{1}", LOGGER_HELPER_NAME, "Строка подключения к БД не определена")
+                );
+            }
+        }
 
 
         public int Add(Patient entity)
@@ -101,6 +115,47 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
 
 
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new DataException(
+                    LOGGER_HELPER_NAME, ex);
+            }
+        }
+
+        public ListResponse<Patient> GetAllPatients()
+        {
+            try
+            {
+                //if (pagezise <= 0) throw new ArgumentOutOfRangeException("pagezise");
+               // if (currentpage <= 0) throw new ArgumentOutOfRangeException("currentpage");
+
+                ListResponse<Patient> list = new ListResponse<Patient>();
+                using (IDbConnection dbConn = GetDbConnection())
+                {
+                    var param = new DynamicParameters();
+                    //param.Add("@PAGENUM", currentpage, DbType.Int32);
+                    //param.Add("@PAGESIZE", pagezise, DbType.Int32);
+                    //param.Add("@SEARCH", search, DbType.String);
+
+                    var dto = dbConn.Query<dynamic>(
+                            "p_GetDoctorsInfo", 
+                            param,
+                            commandType: CommandType.StoredProcedure
+                        )
+                        .SingleOrDefault();
+                    
+                    //list.PageNumber = currentpage;
+                    //list.PageSize = pagezise;
+                    list.TotalRowsCount = dto.TotalRowCnt;
+                    list.RowsCount = dto.RowCnt;
+
+                    list.List = XmlHelper<Patient>.DeserializeToList(dto.Data, "Patients");
+
+                   
+                    
+                }
+                return list;
             }
             catch (Exception ex)
             {
