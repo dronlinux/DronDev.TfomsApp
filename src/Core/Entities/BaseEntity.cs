@@ -2,8 +2,8 @@
 
 namespace DronDev.TestApp.Core.Entities
 {
-    public class BaseEntity<TId> : IBaseEntity<TId>
+    public abstract class BaseEntity<TId> : IBaseEntity<TId>
     {
-        public TId Id { get; set; }
+        public abstract TId Id { get; set; }
     }
 }
