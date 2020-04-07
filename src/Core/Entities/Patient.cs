@@ -1,16 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace DronDev.TestApp.Core.Entities
-{
+{ 
+    [DataContract]
     public class Patient:BaseEntity<int>
     {
         public override int Id { get; set; }
 
         [Required(ErrorMessage = "Фамилия обязательна к заполнению")]
-        public string Fam { get; set; }
+        [DataMember]
+        public string fam { get; set; }
         [Required(ErrorMessage = "Имя обязательна к заполнению")]
-        public string Im { get; set; }
+        [DataMember]
+        public string im { get; set; }
         [Required(ErrorMessage = "Отчество обязательна к заполнению")]
-        public string Ot { get; set; }
+        [DataMember]
+        public string ot { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DronDev.TestApp.Core.Entities;
 using DronDev.TestApp.Core.Messages;
@@ -14,34 +15,28 @@ namespace DronDev.TestApp.IntegrationTests.Repositories
   {
         private PatientRepository _patientRepository;
         private readonly IConfiguration _configuration;
-        private string _connectionString
-            ;
+        private readonly string _connectionString;
 
         public PatientRepositoriesTests()
         {
 
-
-
-            IConfigurationRoot configuration = new ConfigurationBuilder()
+            _configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.test.json")
                 .Build();
 
-            //var connectionStringsAppSettings = new ConnectionStringsAppSettings();
-
+            _connectionString = _configuration.GetConnectionString("DbConnStr");
         }
 
         [Fact]
         public void Can_Get_ListOfPatients_from_db()
         {
            
-
-            _connectionString = _configuration.GetConnectionString("DbConnStr");
-
-            _patientRepository =  new PatientRepository();
+            _patientRepository =  new PatientRepository(_connectionString);
 
             ListResponse<Patient> listResponse = _patientRepository.GetAllPatients();
-            Assert.Equal(0,0);
+            
+            Assert.True(listResponse.List.Any(),"listResponse.Any()");
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
 using DronDev.TestApp.Core.Entities;
@@ -34,6 +35,14 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
             }
         }
 
+        public PatientRepository(string connectionString)
+        {
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentException("Value cannot be null or empty.", nameof(connectionString));
+
+            _connectionString = connectionString;
+        }
+
 
         public int Add(Patient entity)
         {
@@ -42,7 +51,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
                 if (entity == null) throw new ArgumentNullException("entity");
 
                 int id;
-                using (IDbConnection dbConn = GetDbConnection())
+                using (IDbConnection dbConn = new SqlConnection(_connectionString))
                 {
                   
 
@@ -75,7 +84,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
                 if (entity == null) throw new ArgumentNullException("entity");
                 if (entity.Id <= 0) throw new ArgumentOutOfRangeException("entity", "id");
 
-                using (IDbConnection dbConn = GetDbConnection())
+                using (IDbConnection dbConn = new SqlConnection(_connectionString))
                 {
                     var xml = XmlHelper<Patient>.SerializeCleanXml(entity);
 
@@ -102,7 +111,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
             {
                 if (id <= 0) throw new ArgumentOutOfRangeException("id");
 
-                using (IDbConnection dbConn = GetDbConnection())
+                using (IDbConnection dbConn = new SqlConnection(_connectionString))
                 {
                     var param = new DynamicParameters();
                     param.Add("@ID", id, DbType.Int32);
@@ -131,7 +140,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
                // if (currentpage <= 0) throw new ArgumentOutOfRangeException("currentpage");
 
                 ListResponse<Patient> list = new ListResponse<Patient>();
-                using (IDbConnection dbConn = GetDbConnection())
+                using (IDbConnection dbConn = new SqlConnection(_connectionString))
                 {
                     var param = new DynamicParameters();
                     //param.Add("@PAGENUM", currentpage, DbType.Int32);
@@ -139,7 +148,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
                     //param.Add("@SEARCH", search, DbType.String);
 
                     var dto = dbConn.Query<dynamic>(
-                            "p_GetDoctorsInfo", 
+                            "api.GetPatients", 
                             param,
                             commandType: CommandType.StoredProcedure
                         )
@@ -148,9 +157,11 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
                     //list.PageNumber = currentpage;
                     //list.PageSize = pagezise;
                     list.TotalRowsCount = dto.TotalRowCnt;
-                    list.RowsCount = dto.RowCnt;
+                    //list.RowsCount = dto.RowCnt;
 
-                    list.List = XmlHelper<Patient>.DeserializeToList(dto.Data, "Patients");
+    
+
+                    list.List = XmlHelper<Patient>.DeserializeToList(dto.data, "Patients");
 
                    
                     
