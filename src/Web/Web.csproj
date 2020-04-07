@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>DronDev.TestApp.Web</RootNamespace>
   </PropertyGroup>
 
 </Project>
