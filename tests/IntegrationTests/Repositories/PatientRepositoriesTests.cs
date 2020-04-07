@@ -39,5 +39,74 @@ namespace DronDev.TestApp.IntegrationTests.Repositories
             Assert.True(listResponse.List.Any(),"listResponse.Any()");
         }
 
+
+        [Fact]
+        public void Can_Add_Patient()
+        {
+            _patientRepository = new PatientRepository(_connectionString);
+
+            int insertedID = _patientRepository.Add(
+                new Patient()
+                {
+                    fam = "TEST",
+                    im = "TEST",
+                    ot = "TEST",
+                    dr = DateTime.Now,
+                    sex = 1
+                }
+            );
+            Assert.True(insertedID > 0, "Error Add Patient");
+        }
+
+        [Fact]
+        public void Can_Delete_Patient()
+        {
+            _patientRepository = new PatientRepository(_connectionString);
+
+            int insertedID = _patientRepository.Add(
+                new Patient()
+                {
+                    fam = "TEST_DELETE",
+                    im = "TEST_DELETE",
+                    ot = "TEST_DELETE",
+                    dr = DateTime.Now,
+                    sex = 1
+                }
+            );
+            Assert.True(insertedID > 0, "Error Add Patient");
+
+            _patientRepository.Delete(insertedID);
+
+        }
+
+        [Fact]
+        public void Can_UpdateInfo_About_Patient()
+        {
+
+            Patient patient = new Patient()
+            {
+                fam = "TEST_UPDATE",
+                im = "TEST_UPDATE",
+                ot = "TEST_UPDATE",
+                dr = DateTime.Now,
+                sex = 1
+            };
+            _patientRepository = new PatientRepository(_connectionString);
+
+            int insertedId = _patientRepository.Add(patient);
+
+            Assert.True(insertedId > 0, "Error Add Patient");
+
+            patient.Id = insertedId;
+
+            patient.fam = "TEST_UPDATE2";
+            patient.im = "TEST_UPDATE2";
+            patient.ot = "TEST_UPDATE2";
+
+            _patientRepository.Edit(patient);
+
+        }
+
+
     }
 }

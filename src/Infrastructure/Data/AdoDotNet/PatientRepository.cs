@@ -61,7 +61,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
                     param.Add("@XMLDoc", xml, DbType.String);
 
                     var addedId = dbConn.Query<int>(
-                        "p_AddPatient",
+                        "api.AddPatient",
                         param,
                         commandType: CommandType.StoredProcedure
                     ).SingleOrDefault();
@@ -92,7 +92,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
                     param.Add("@XMLDoc", xml, DbType.String);
 
                     var addedId = dbConn.Query<int>(
-                        "p_EditPatient",
+                        "api.UpdatePatient",
                         param,
                         commandType: CommandType.StoredProcedure
                     ).SingleOrDefault();
@@ -117,7 +117,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
                     param.Add("@ID", id, DbType.Int32);
 
                     var result = dbConn.Query<int>(
-                        "p_DeletePatient",
+                        "api.DeletePatient",
                         param,
                         commandType: CommandType.StoredProcedure
                     ).SingleOrDefault();
