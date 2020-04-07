@@ -1,6 +1,4 @@
-using System;
-
-namespace Web.Models
+namespace DronDev.TestApp.Web.Models
 {
     public class ErrorViewModel
     {
