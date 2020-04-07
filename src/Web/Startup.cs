@@ -1,3 +1,6 @@
+using DronDev.TestApp.Core.Interfaces;
+using DronDev.TestApp.Core.Services;
+using DronDev.TestApp.Infrastructure.Data.AdoDotNet;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +23,12 @@ namespace DronDev.TestApp.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            var connectionString = Configuration.GetConnectionString("DbConnStr");
+            services.AddScoped<IPatientRepository>(_=>new PatientRepository(connectionString));
+            services.AddScoped<IPatientWorkflowService,PatientWorkflowService>();
+
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {

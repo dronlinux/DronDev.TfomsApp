@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DronDev.TestApp.Core.Entities;
+using DronDev.TestApp.Core.Interfaces;
+using DronDev.TestApp.Core.Messages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DronDev.TestApp.Web.Controllers.Api
 {
@@ -11,11 +15,27 @@ namespace DronDev.TestApp.Web.Controllers.Api
     [ApiController]
     public class PatientController : ControllerBase
     {
+        private readonly ILogger<PatientController> _logger;
+        private readonly IPatientWorkflowService _patientWorkflow;
+
+
+        public PatientController(
+            IPatientWorkflowService patientWorkflow,
+            ILogger<PatientController> logger)
+        {
+            _patientWorkflow = patientWorkflow;
+            _logger = logger;
+        }
+
+
         // GET: api/Patient
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            ListResponse<Patient> listResponse =
+                _patientWorkflow.GetPatients();
+
+            return Ok(listResponse);
         }
 
         // GET: api/Patient/5

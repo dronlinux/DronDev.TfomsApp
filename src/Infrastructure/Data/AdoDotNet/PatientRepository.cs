@@ -24,21 +24,21 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
             DbProviderFactories.GetFactory("System.Data.SqlClient");
 
         private readonly IConfiguration _configuration;
-        public PatientRepository()
-        {
-            _connectionString = _configuration.GetConnectionString("DbConnStr");
-            if (string.IsNullOrEmpty(_connectionString))
-            {
-                throw new DataException(
-                    string.Format("{0}:{1}", LOGGER_HELPER_NAME, "Строка подключения к БД не определена")
-                );
-            }
-        }
+        //public PatientRepository()
+        //{
+        //    _connectionString = _configuration.GetConnectionString("DbConnStr");
+        //    if (string.IsNullOrEmpty(_connectionString))
+        //    {
+        //        throw new DataException(
+        //            string.Format("{0}:{1}", LOGGER_HELPER_NAME, "Строка подключения к БД не определена")
+        //        );
+        //    }
+        //}
 
         public PatientRepository(string connectionString)
         {
             if (string.IsNullOrEmpty(connectionString))
-                throw new ArgumentException("Value cannot be null or empty.", nameof(connectionString));
+                throw new ArgumentException("Строка подключения к БД не определена", nameof(connectionString));
 
             _connectionString = connectionString;
         }
