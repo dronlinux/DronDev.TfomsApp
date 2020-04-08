@@ -97,7 +97,7 @@ namespace DronDev.TestApp.IntegrationTests.Repositories
 
             Assert.True(insertedId > 0, "Error Add Patient");
 
-            patient.Id = insertedId;
+            patient.IdentId = insertedId;
 
             patient.fam = "TEST_UPDATE2";
             patient.im = "TEST_UPDATE2";

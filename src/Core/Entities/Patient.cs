@@ -7,7 +7,17 @@ namespace DronDev.TestApp.Core.Entities
     [DataContract]
     public class Patient:BaseEntity<int>
     {
-        public override int Id { get; set; }
+
+        [DataMember]
+        public int id { get; set; }
+
+        [DataMember]
+        public override int IdentId
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
 
         [Required(ErrorMessage = "Фамилия обязательна к заполнению")]
         [DataMember]

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using DronDev.TestApp.Core.Entities;
 using DronDev.TestApp.Core.Interfaces;
 using DronDev.TestApp.Core.Messages;
+using DronDev.TestApp.Web.Library;
+using DronDev.TestApp.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,6 +19,7 @@ namespace DronDev.TestApp.Web.Controllers.Api
     {
         private readonly ILogger<PatientController> _logger;
         private readonly IPatientWorkflowService _patientWorkflow;
+        private readonly RequestFactory _requestFactory;
 
 
         public PatientController(
@@ -25,6 +28,7 @@ namespace DronDev.TestApp.Web.Controllers.Api
         {
             _patientWorkflow = patientWorkflow;
             _logger = logger;
+            _requestFactory = new RequestFactory();
         }
 
 
@@ -47,20 +51,36 @@ namespace DronDev.TestApp.Web.Controllers.Api
 
         // POST: api/Patient
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Route("{id}")]
+        public void Post(PatientViewModel value)
         {
+
         }
 
-        // PUT: api/Patient/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost]
+        [Route("")]
+        public IActionResult Post(Patient dto)
         {
+
+            BaseRequest<Patient> baseRequest =
+                _requestFactory.CreateRequest<Patient>(dto);
+            return Ok(_patientWorkflow.Add(baseRequest));
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Patient dto)
+        {
+            BaseRequest<Patient> baseRequest =
+                _requestFactory.CreateRequest<Patient>(dto);
+            return Ok(_patientWorkflow.Edit(id,baseRequest));
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            return Ok(_patientWorkflow.Delete(id));
+
         }
     }
 }

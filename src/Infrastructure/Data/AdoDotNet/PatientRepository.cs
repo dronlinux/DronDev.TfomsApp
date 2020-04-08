@@ -82,7 +82,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
             try
             {
                 if (entity == null) throw new ArgumentNullException("entity");
-                if (entity.Id <= 0) throw new ArgumentOutOfRangeException("entity", "id");
+                if (entity.IdentId <= 0) throw new ArgumentOutOfRangeException("entity", "IdentId");
 
                 using (IDbConnection dbConn = new SqlConnection(_connectionString))
                 {

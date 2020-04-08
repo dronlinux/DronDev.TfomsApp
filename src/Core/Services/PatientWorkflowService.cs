@@ -22,9 +22,7 @@ namespace DronDev.TestApp.Core.Services
             try
             {
                 Patient patient = dto.Value;
-                    
-
-
+ 
                 if (patient.Validate())
                 {
 
@@ -88,7 +86,10 @@ namespace DronDev.TestApp.Core.Services
 
         public BaseResponse Delete(int id)
         {
-            throw new System.NotImplementedException();
+            return Run(() =>
+            {
+                _patientRepository.Delete(id);
+            });
         }
 
         public ListResponse<Patient> GetPatients()
