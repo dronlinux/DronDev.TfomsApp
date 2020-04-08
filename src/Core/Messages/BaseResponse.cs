@@ -1,12 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using DronDev.TestApp.Core.Validation;
 
 namespace DronDev.TestApp.Core.Messages
 {
+    [DataContract]
+    [Serializable]
     public class BaseResponse
     {
         private bool _showNotification;
       
+        [DataMember]
         public bool ShowNotification
         {
             get { return _showNotification; }
@@ -15,6 +20,7 @@ namespace DronDev.TestApp.Core.Messages
 
         private bool _success;
      
+        [DataMember]
         public bool Success
         {
             get { return _success; }
@@ -23,6 +29,7 @@ namespace DronDev.TestApp.Core.Messages
 
         private string _errorMessage;
  
+        [DataMember]
         public string ErrorMessage
         {
             get { return _errorMessage; }
@@ -31,6 +38,7 @@ namespace DronDev.TestApp.Core.Messages
 
         private List<ValidationRule> brokenRules;
 
+        [DataMember]
         public List<ValidationRule> BrokenRules
         {
             get { return brokenRules; }
@@ -55,6 +63,7 @@ namespace DronDev.TestApp.Core.Messages
         }
     }
 
+    [DataContract]
     public class BaseResponse<T> : BaseResponse
     {
         public BaseResponse(T value)
@@ -66,7 +75,7 @@ namespace DronDev.TestApp.Core.Messages
         {
         }
 
-     
-        public T Value;
+        [DataMember] 
+        public T Value { get; set; }
     }
 }

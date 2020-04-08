@@ -1,3 +1,4 @@
+using AutoMapper;
 using DronDev.TestApp.Core.Interfaces;
 using DronDev.TestApp.Core.Services;
 using DronDev.TestApp.Infrastructure.Data.AdoDotNet;
@@ -22,6 +23,11 @@ namespace DronDev.TestApp.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            //Automapper
+
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddControllersWithViews();
 
             var connectionString = Configuration.GetConnectionString("DbConnStr");

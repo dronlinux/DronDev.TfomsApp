@@ -6,6 +6,7 @@ namespace DronDev.TestApp.Web.ViewModels
 {
     public class PatientViewModel
     {
+
         public string fam { get; set; }
 
 
