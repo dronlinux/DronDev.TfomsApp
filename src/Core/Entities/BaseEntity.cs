@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using DronDev.TestApp.Core.Interfaces;
 using DronDev.TestApp.Core.Validation;
 
 namespace DronDev.TestApp.Core.Entities
 {
+    [DataContract]
     public abstract class BaseEntity<TId> : IBaseEntity<TId>
     {
 
         public virtual List<ValidationRule> BrokenRules { get; set; }
-        public abstract TId Id { get; set; }
+        public abstract TId IdentId { get; set; }
 
         public BaseEntity()
         {
