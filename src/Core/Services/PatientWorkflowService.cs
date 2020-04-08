@@ -53,6 +53,7 @@ namespace DronDev.TestApp.Core.Services
             try
             {
                 Patient patient = dto.Value;
+                patient.id = id;
                     
                 if (patient.Validate())
                 {

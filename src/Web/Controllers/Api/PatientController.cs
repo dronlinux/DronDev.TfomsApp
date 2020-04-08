@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DronDev.TestApp.Core.Entities;
 using DronDev.TestApp.Core.Interfaces;
 using DronDev.TestApp.Core.Messages;
@@ -20,15 +21,16 @@ namespace DronDev.TestApp.Web.Controllers.Api
         private readonly ILogger<PatientController> _logger;
         private readonly IPatientWorkflowService _patientWorkflow;
         private readonly RequestFactory _requestFactory;
-
+        private readonly IMapper _mapper;
 
         public PatientController(
-            IPatientWorkflowService patientWorkflow,
+            IPatientWorkflowService patientWorkflow,IMapper mapper,
             ILogger<PatientController> logger)
         {
             _patientWorkflow = patientWorkflow;
             _logger = logger;
             _requestFactory = new RequestFactory();
+            _mapper = mapper;
         }
 
 
@@ -50,28 +52,36 @@ namespace DronDev.TestApp.Web.Controllers.Api
         }
 
         // POST: api/Patient
-        [HttpPost]
-        [Route("{id}")]
-        public void Post(PatientViewModel value)
-        {
+        //[HttpPost]
+        //[Route("{id}")]
+        //public void Post(PatientViewModel value)
+        //{
 
-        }
+        //}
 
         [HttpPost]
         [Route("")]
-        public IActionResult Post(Patient dto)
+        public IActionResult Post(PatientViewModel dto)
         {
 
+            var newPatient =_mapper.Map<Patient>(dto);
+
             BaseRequest<Patient> baseRequest =
-                _requestFactory.CreateRequest<Patient>(dto);
-            return Ok(_patientWorkflow.Add(baseRequest));
+                _requestFactory.CreateRequest(newPatient);
+
+            var response = _patientWorkflow.Add(baseRequest);
+
+            return Ok(response);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Patient dto)
+        public IActionResult Put(int id, PatientViewModel dto)
         {
+           
+            var editPatient =_mapper.Map<Patient>(dto);
+
             BaseRequest<Patient> baseRequest =
-                _requestFactory.CreateRequest<Patient>(dto);
+                _requestFactory.CreateRequest<Patient>(editPatient);
             return Ok(_patientWorkflow.Edit(id,baseRequest));
         }
 
