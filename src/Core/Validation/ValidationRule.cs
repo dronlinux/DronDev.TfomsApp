@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DronDev.TestApp.Core.Validation
 {
+    [DataContract]
+    [Serializable]
     public class ValidationRule
     {
         [DataMember()]
