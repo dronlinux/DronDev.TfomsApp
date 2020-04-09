@@ -5,7 +5,7 @@
 
 $(document).ready(function() {
 
-    $('#idPatientsList').DataTable({
+   let patientTable = $('#idPatientsList').DataTable({
             ajax: {
                 url: 'api/Patient',
                 type: 'GET',
@@ -100,7 +100,7 @@ $(document).ready(function() {
                             body: JSON.stringify(addPatientBody)
                         })
                     .then((response) => {
-                        table.ajax.reload();
+                        patientTable.ajax.reload();
                         $('#createModal').modal('hide');
                         document.querySelector('#frmCreate').reset();
                     })
@@ -123,7 +123,7 @@ $(document).ready(function() {
                                 cache: 'no-cache'
                             })
                         .then((response) => {
-                            table.ajax.reload();
+                            patientTable.ajax.reload();
                         })
                         .catch((error) => {
                             console.log(error);
