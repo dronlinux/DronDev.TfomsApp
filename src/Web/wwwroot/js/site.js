@@ -11,6 +11,7 @@ $(document).ready(function() {
                 type: 'GET',
                 dataSrc: 'list'
             },
+            processing: true,
             searching: false,
             autoWidth: true,
             deferRender: true,
@@ -31,9 +32,9 @@ $(document).ready(function() {
                     searchable: false,
                     orderable: false
                 },
-                { title: 'Фамилия', data: 'fam' },
-                { title: 'Имя', data: 'im' },
-                { title: 'Отчество', data: 'ot' },
+                { title: 'Фамилия', data: 'fam',autoWidth: true },
+                { title: 'Имя', data: 'im',autoWidth: true },
+                { title: 'Отчество', data: 'ot',autoWidth: true },
                 {
                     title: 'Дата рождения',
                     data: 'dr',
@@ -49,12 +50,11 @@ $(document).ready(function() {
                     orderable: false,
                     width: 100,
                     data: "Action",
+                   
                     render: function(data, type, row) {
-                        return `<div>
-                                    <button type="button" class="btn btn-sm btn-info mr-2 btnEdit" data-key="${
-                            row.identId}">Редактировать</button>
-                                    <button type="button" class="btn btn-sm btn-danger btnDelete" data-key="${row
-                            .identId}">Удалить</button>
+                        return `<div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-info mr-2 btnEdit" data-key="${row.identId}">Редактировать</button>
+                                    <button type="button" class="btn btn-sm btn-danger btnDelete" data-key="${row.identId}">Удалить</button>
                                 </div>`;
                     }
                 }
@@ -64,6 +64,7 @@ $(document).ready(function() {
                     text: 'Добавить',
                     className: 'btn btn-sm btn-success',
                     action: function(e, dt, node, config) {
+                       
                         $('#createModal').modal('show');
                     },
                     init: function(api, node, config) {
@@ -74,6 +75,19 @@ $(document).ready(function() {
 
         }
     );
+
+
+    function showErrorMessages(json) {
+        if (json.showNotification && json.showNotification === true) {
+            if (json.brokenRules && json.brokenRules.length > 0) {
+                let brokenRules = "";
+                for (let i = 0; i < json.brokenRules.length; i++)
+                    brokenRules += json.brokenRules[i].rule + "<br />";
+                toastr.warning(brokenRules);
+            }
+
+        }
+    }
 
     $(document)
         .off('click', '#btnCreate')
@@ -100,21 +114,36 @@ $(document).ready(function() {
                             body: JSON.stringify(addPatientBody)
                         })
                     .then((response) => {
-                        patientTable.ajax.reload();
-                        $('#createModal').modal('hide');
-                        document.querySelector('#frmCreate').reset();
+                        if (!response.ok) { throw response }
+                        return response.json();  //we only get here if there is no error
+ 
+                    }).then((json) => {
+                        
+                        if (!json.success) {
+                            showErrorMessages(json);
+                        } else {
+                            patientTable.ajax.reload();
+                            $('#createModal').modal('hide');
+                            document.querySelector('#frmCreate').reset();
+                        }
                     })
                     .catch((error) => {
-                        console.log(error);
+                        if (error.text) {
+                            error.text().then( errorMessage => {
+                                toastr.error(errorMessage);
+                            })
+                        } else {
+                            toastr.error("Ошибка сервера"); // Hardcoded error here
+                        }
+ 
                     });
             });
 
     $(document)
         .off('click', '.btnDelete')
-        .on('click',
-            '.btnDelete',
-            function() {
-                const id = $(this).attr('data-key');
+        .on('click','.btnDelete',function() {
+                
+            const id = $(this).attr('data-key');
 
                 if (confirm('Вы уверены?')) {
                     fetch(`api/Patient/${id}`,
@@ -123,11 +152,46 @@ $(document).ready(function() {
                                 cache: 'no-cache'
                             })
                         .then((response) => {
-                            patientTable.ajax.reload();
+                            if (!response.ok) { throw response }
+                            return response.json();  //we only get here if there is no error
+
+                           
+                        }).then((json) => {
+                            if (!json.success) {
+                                showErrorMessages(json);
+                            } else {
+                                patientTable.ajax.reload();
+                            }
                         })
                         .catch((error) => {
-                            console.log(error);
+                            if (error.text) {
+                                error.text().then( errorMessage => {
+                                    toastr.error(errorMessage);
+                                })
+                            } else {
+                                toastr.error("Ошибка сервера"); // Hardcoded error here
+                            }
                         });
                 }
             });
+    
+    $(document)
+        .off('click', '#btnUpdate')
+        .on('click', '#btnUpdate', function () {
+
+            fetch('api/Patient/${id}',
+                    {
+                        method: 'PUT',
+                        cache: 'no-cache',
+                        body: new URLSearchParams(new FormData(document.querySelector('#frmEdit')))
+                    })
+                .then((response) => {
+                    patientTable.ajax.reload();
+                    $('#editModal').modal('hide');
+                    $('#editPartial').html('');
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        });
 });

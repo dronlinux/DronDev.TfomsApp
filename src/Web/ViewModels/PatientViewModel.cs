@@ -17,6 +17,6 @@ namespace DronDev.TestApp.Web.ViewModels
         public DateTime? dr { get; set; }
 
 
-        public int sex { get; set; }
+        public int? sex { get; set; }
     }
 }
