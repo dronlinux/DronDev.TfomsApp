@@ -16,3 +16,14 @@
 4. AutoMapper
 5. Serilog
 6. Jquery Datatables
+
+### Настройка
+
+1. В разделе Release скачать последний релиз исходного кода
+2. Восстановить БД (используется SQL Server 2017) с помощью скриптов в каталоге: [КаталогПроекта]/deps/db
+3. Открыть проект в Visual Studio, выбрать Solution - Nuget Восстановление пакетов
+4. Выделить проект /src/Web и назначить его Проектом для запуска/Startup Project
+5. Исправить строку подключения к БД (DbConnStr) в файлах настроек *appsettings.json* и *appsettings.Development.json*
+6. Запустить проект в Visual Studio. Автоматически будет запущен браузер с адресом приложения https://localhost:44383/
+7. По адресу https://localhost:44383/swagger будет доступен Swagger с описанием API
+
