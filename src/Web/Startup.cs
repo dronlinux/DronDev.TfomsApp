@@ -28,7 +28,8 @@ namespace DronDev.TestApp.Web
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddControllersWithViews();
+            //Переход с нового Microsoft сериализатора JSON на старый Newtonsoft
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
             var connectionString = Configuration.GetConnectionString("DbConnStr");
             services.AddScoped<IPatientRepository>(_=>new PatientRepository(connectionString));
