@@ -77,7 +77,7 @@ namespace DronDev.TestApp.Core.Services
 
         public Patient FindById(int id)
         {
-            throw new System.NotImplementedException();
+            return _patientRepository.GetPatientById(id);
         }
 
         public ListResponse<Patient> FindBy(BaseRequest request)

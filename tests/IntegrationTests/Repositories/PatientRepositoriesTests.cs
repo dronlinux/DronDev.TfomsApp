@@ -107,6 +107,29 @@ namespace DronDev.TestApp.IntegrationTests.Repositories
 
         }
 
+        [Fact]
+        public void Can_GetPatientInfo_Byid()
+        {
+
+            Patient patient = new Patient()
+            {
+                fam = "TEST_Info",
+                im = "TEST_Info",
+                ot = "TEST_Info",
+                dr = DateTime.Now,
+                sex = 1
+            };
+            _patientRepository = new PatientRepository(_connectionString);
+
+            int insertedId = _patientRepository.Add(patient);
+
+            Assert.True(insertedId > 0, "Error Add Patient");
+
+            Patient patientById = _patientRepository.GetPatientById(insertedId);
+
+            Assert.Equal(insertedId,patientById.IdentId);
+        }
+
 
     }
 }

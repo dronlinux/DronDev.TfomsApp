@@ -176,22 +176,75 @@ $(document).ready(function() {
             });
     
     $(document)
-        .off('click', '#btnUpdate')
-        .on('click', '#btnUpdate', function () {
+        .off('click', '.btnEdit')
+        .on('click', '.btnEdit', function () {
+            const id = $(this).attr('data-key');
 
-            fetch('api/Patient/${id}',
+            fetch(`/Home/EditPatient/${id}`,
                     {
-                        method: 'PUT',
-                        cache: 'no-cache',
-                        body: new URLSearchParams(new FormData(document.querySelector('#frmEdit')))
+                        method: 'GET',
+                        cache: 'no-cache'
                     })
                 .then((response) => {
+                    if (!response.ok) { throw response }
+                    return response.text();  //we only get here if there is no error
+                })
+                .then((resultText) => {
+                    $('#editPartial').html(resultText);
+                    $('#editModal').modal('show');
+                })
+                .catch((error) => {
+                    if (error.text) {
+                        error.text().then( errorMessage => {
+                            toastr.error(errorMessage);
+                        })
+                    } else {
+                        toastr.error("Ошибка сервера"); // Hardcoded error here
+                    }
+                });
+        });
+    
+    $(document)
+        .off('click', '#btnUpdate')
+        .on('click', '#btnUpdate', function () {
+            const id = $(this).attr('data-key');
+            const editFormData = document.querySelector('#frmEdit');
+            let editPatientBody = {
+                id:  editFormData.IdentId.value,
+                fam: editFormData.fam.value,
+                im: editFormData.im.value,
+                ot: editFormData.ot.value,
+                dr: editFormData.dr.value,
+                sex:editFormData.sex.value
+            }
+
+            fetch(`api/Patient/${editPatientBody.id}`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        cache: 'no-cache',
+                        body: JSON.stringify(editPatientBody)
+                    })
+                .then((response) => {
+                    if (!response.ok) { throw response }
+                    return response.text();  //we only get here if there is no error
+                   
+                }).then((responseText) => {
                     patientTable.ajax.reload();
                     $('#editModal').modal('hide');
                     $('#editPartial').html('');
                 })
                 .catch((error) => {
-                    console.log(error);
+                    if (error.text) {
+                        error.text().then( errorMessage => {
+                            toastr.error(errorMessage);
+                        })
+                    } else {
+                        toastr.error("Ошибка сервера"); // Hardcoded error here
+                    }
                 });
         });
 });

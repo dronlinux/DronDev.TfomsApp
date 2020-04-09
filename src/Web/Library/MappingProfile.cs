@@ -9,6 +9,7 @@ namespace DronDev.TestApp.Web.Library
         public MappingProfile()
         {
             CreateMap<PatientViewModel, Patient>();
+            CreateMap<Patient,PatientEditViewModel>();
         }
     }
 }
