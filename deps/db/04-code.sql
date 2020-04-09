@@ -224,3 +224,38 @@ begin
 	end
 end
 GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE procedure [api].[GetPatientById]
+@Id int
+as
+begin
+	set nocount on;
+	set xact_abort on;
+	begin try
+		select p.id,
+		       p.fam,
+		       p.im,
+		       p.ot,
+		       p.sex,
+		       p.dr
+		from   store.patient as p
+		where  p.id = @Id
+		       for xml path('Patient'),
+		       type
+	end try
+	begin catch
+		if @@TRANCOUNT > 0
+		    rollback;
+		
+		exec util.Err_Handler;
+	end catch
+end
+GO
+

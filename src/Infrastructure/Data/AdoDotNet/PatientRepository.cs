@@ -23,18 +23,7 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
         private static readonly DbProviderFactory _factory =
             DbProviderFactories.GetFactory("System.Data.SqlClient");
 
-        private readonly IConfiguration _configuration;
-        //public PatientRepository()
-        //{
-        //    _connectionString = _configuration.GetConnectionString("DbConnStr");
-        //    if (string.IsNullOrEmpty(_connectionString))
-        //    {
-        //        throw new DataException(
-        //            string.Format("{0}:{1}", LOGGER_HELPER_NAME, "Строка подключения к БД не определена")
-        //        );
-        //    }
-        //}
-
+   
         public PatientRepository(string connectionString)
         {
             if (string.IsNullOrEmpty(connectionString))
@@ -175,12 +164,32 @@ namespace DronDev.TestApp.Infrastructure.Data.AdoDotNet
             }
         }
 
-        DbConnection GetDbConnection()
+        public Patient GetPatientById(int id)
         {
-            DbConnection connection = _factory.CreateConnection();
-            connection.ConnectionString = _connectionString;
-            connection.Open();
-            return connection;
+            try
+            {
+                if (id <= 0) throw new ArgumentOutOfRangeException("id");
+
+                Patient patient;
+                using (IDbConnection dbConn = new SqlConnection(_connectionString))
+                {
+                    var xml = dbConn.Query<string>(
+                            "api.GetPatientById",
+                            new{Id=id},
+                            commandType: CommandType.StoredProcedure)
+                        .SingleOrDefault();
+
+                    patient =  XmlHelper<Patient>.Deserialize(xml);
+
+                }
+                return patient;
+            }
+            catch (Exception ex)
+            {
+                throw new DataException(
+                    LOGGER_HELPER_NAME, ex);
+            }
+
         }
     }
 }
