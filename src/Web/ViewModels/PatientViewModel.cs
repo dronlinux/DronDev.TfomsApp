@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace DronDev.TestApp.Web.ViewModels
 {
@@ -15,10 +13,10 @@ namespace DronDev.TestApp.Web.ViewModels
 
         public string ot { get; set; }
 
-
+        
         public DateTime? dr { get; set; }
 
 
-        public int sex { get; set; }
+        public int? sex { get; set; }
     }
 }
