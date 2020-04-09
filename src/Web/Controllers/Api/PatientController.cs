@@ -24,7 +24,7 @@ namespace DronDev.TestApp.Web.Controllers.Api
         private readonly IMapper _mapper;
 
         public PatientController(
-            IPatientWorkflowService patientWorkflow,IMapper mapper,
+            IPatientWorkflowService patientWorkflow, IMapper mapper,
             ILogger<PatientController> logger)
         {
             _patientWorkflow = patientWorkflow;
@@ -36,10 +36,19 @@ namespace DronDev.TestApp.Web.Controllers.Api
         [HttpGet]
         public IActionResult Get()
         {
-            ListResponse<Patient> listResponse =
-                _patientWorkflow.GetPatients();
+            try
+            {
+                ListResponse<Patient> listResponse =
+                    _patientWorkflow.GetPatients();
 
-            return Ok(listResponse);
+                return Ok(listResponse);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Error Patient Get List");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
         }
 
         //[HttpGet("{id}", Name = "Get")]
@@ -48,37 +57,58 @@ namespace DronDev.TestApp.Web.Controllers.Api
         //    return "value";
         //}
 
-         [HttpPost]
+        [HttpPost]
         [Route("")]
         public IActionResult Post(PatientViewModel dto)
         {
+            try
+            {
+                var newPatient = _mapper.Map<Patient>(dto);
 
-            var newPatient =_mapper.Map<Patient>(dto);
+                BaseRequest<Patient> baseRequest =
+                    _requestFactory.CreateRequest(newPatient);
 
-            BaseRequest<Patient> baseRequest =
-                _requestFactory.CreateRequest(newPatient);
+                var response = _patientWorkflow.Add(baseRequest);
 
-            var response = _patientWorkflow.Add(baseRequest);
-
-            return Ok(response);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Error Patient Post");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPut("{id}")]
         public IActionResult Put(int id, PatientViewModel dto)
         {
-           
-            var editPatient =_mapper.Map<Patient>(dto);
+            try
+            {
+                var editPatient = _mapper.Map<Patient>(dto);
 
-            BaseRequest<Patient> baseRequest =
-                _requestFactory.CreateRequest<Patient>(editPatient);
-            return Ok(_patientWorkflow.Edit(id,baseRequest));
+                BaseRequest<Patient> baseRequest =
+                    _requestFactory.CreateRequest<Patient>(editPatient);
+                return Ok(_patientWorkflow.Edit(id, baseRequest));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Error Patient Update");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            return Ok(_patientWorkflow.Delete(id));
-
+            try
+            {
+                return Ok(_patientWorkflow.Delete(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Error Patient Delete");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }
