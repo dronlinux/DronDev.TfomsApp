@@ -33,8 +33,6 @@ namespace DronDev.TestApp.Web.Controllers.Api
             _mapper = mapper;
         }
 
-
-        // GET: api/Patient
         [HttpGet]
         public IActionResult Get()
         {
@@ -44,22 +42,13 @@ namespace DronDev.TestApp.Web.Controllers.Api
             return Ok(listResponse);
         }
 
-        // GET: api/Patient/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/Patient
-        //[HttpPost]
-        //[Route("{id}")]
-        //public void Post(PatientViewModel value)
+        //[HttpGet("{id}", Name = "Get")]
+        //public string Get(int id)
         //{
-
+        //    return "value";
         //}
 
-        [HttpPost]
+         [HttpPost]
         [Route("")]
         public IActionResult Post(PatientViewModel dto)
         {
@@ -85,7 +74,6 @@ namespace DronDev.TestApp.Web.Controllers.Api
             return Ok(_patientWorkflow.Edit(id,baseRequest));
         }
 
-        // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
